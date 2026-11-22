@@ -1,0 +1,46 @@
+name: Build and Release DEX
+
+on:
+  push:
+    tags:
+      - 'v*' # Запускать при создании тега, например v1.0.0
+
+jobs:
+  build_dex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build Raw JAR
+        run: ./gradlew jar --no-daemon # Или ./gradlew assembleRelease
+
+      - name: Convert to Dalvik Bytecode (d8 Dex)
+        run: |
+          # Android SDK предустановлен на ubuntu-latest
+          BUILD_TOOLS_DIR=$(ls -d $ANDROID_HOME/build-tools/* | tail -1)
+          D8_PATH="$BUILD_TOOLS_DIR/d8"
+          ANDROID_JAR="$ANDROID_HOME/platforms/android-34/android.jar"
+
+          # Найдите ваш JAR-файл (путь может отличаться)
+          JAR_FILE=$(find build/libs -name "*.jar" | head -1)
+
+          # Конвертация в classes.dex
+          $D8_PATH --release --lib $ANDROID_JAR --output . "$JAR_FILE"
+
+      - name: Package DEX into final JAR (опционально)
+        run: |
+          # Упаковываем classes.dex в итоговый jar, если нужно
+          jar cvf final-plugin.jar classes.dex
+
+      - name: Upload DEX as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dex-file
+          path: classes.dex # Или final-plugin.jar
