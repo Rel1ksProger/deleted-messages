@@ -230,7 +230,7 @@ class DeletedMessagesPlugin(BasePlugin):
     def _set_limit(self, value):
         global _limit_per_chat
         try:
-            _limit_per_chat = max(10, min(500, int(value)))
+            _limit_per_chat = max(10, min(1000, int(value)))
         except (ValueError, TypeError):
             _limit_per_chat = 100
 
