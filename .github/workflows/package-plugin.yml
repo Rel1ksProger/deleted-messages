@@ -1,0 +1,23 @@
+﻿name: Package .plugin
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Подготовка артефакта
+        run: |
+          mkdir -p dist
+          cp deleted_messages.py dist/deleted_messages.plugin
+
+      - name: Загрузка .plugin как артефакт
+        uses: actions/upload-artifact@v4
+        with:
+          name: deleted_messages-plugin
+          path: dist/deleted_messages.plugin
