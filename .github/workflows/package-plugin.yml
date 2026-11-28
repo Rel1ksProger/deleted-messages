@@ -1,4 +1,4 @@
-﻿name: Package and Release .plugin
+name: Package and Release .plugin
 
 on:
   push:
