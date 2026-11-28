@@ -19,7 +19,7 @@ jobs:
       - name: Remove BOM from source file
         run: |
           sed -i '1s/^\xEF\xBB\xBF//' deleted_messages.py
-          
+
       - name: Prepare artifact
         run: |
           mkdir -p dist
