@@ -1,4 +1,4 @@
-﻿# deleted_messages.py
+# deleted_messages.py
 # -*- coding: utf-8 -*-
 
 __id__ = "deleted_messages"
